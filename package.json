@@ -1,0 +1,26 @@
+{
+  "name": "microbloggr",
+  "version": "1.0.0",
+  "description": "Second General Assembly Software Engineering Project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/g-star423/microbloggr.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/g-star423/microbloggr/issues"
+  },
+  "homepage": "https://github.com/g-star423/microbloggr#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "method-override": "^3.0.0",
+    "mongoose": "^6.7.2"
+  }
+}
