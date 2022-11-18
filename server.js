@@ -26,9 +26,9 @@ app.get('/', (request, response) => {
     })
 })
 
-// mongoose.connect('mongodb://localhost:27017/microbloggr', () => {
-//     console.log('The connection with mongod is established');
-// })
+mongoose.connect('mongodb+srv://gstar:' + process.env.MONGO_PASSWORD + '@cluster0.lrovc1s.mongodb.net/?retryWrites=true&w=majority', () => {
+    console.log('The connection with mongod is established');
+})
 
 // app.listen(3000, () => {
 //     console.log("listening...");
@@ -41,3 +41,4 @@ if (port == null || port == "") {
 app.listen(port, () => {
     console.log("Hello Seattle, I'm listening");
 });
+
