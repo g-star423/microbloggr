@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head.ejs') %>
+</head>
+
+<body>
+    <header>
+        <%- include('./partials/header.ejs') %>
+    </header>
+    <p>
+        <%=post.author%>
+    </p>
+    <p>
+        <%=post.postBody%>
+    </p>
+    <p>
+        <%=post.tags%>
+    </p>
+    <p>
+        <%=post.createdAt%>
+    </p>
+    <p>
+        <%=post.updatedAt%>
+    </p>
+    <a href="/posts/<%= post._id %>/edit">Edit this post</a>
+    <form action="/posts/<%=post._id%>?_method=DELETE" method="POST">
+        <input type="submit" value="DELETE">
+    </form>
+
+    <a>Delete this post</a>
+</body>
+
+</html>

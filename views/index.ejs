@@ -2,16 +2,47 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <%- include('./partials/head.ejs') %>
 </head>
 
 <body>
-    <h1>This is a test page for HEROKU Server.</h1>
-    <p>This is testing if dotenv is working: <%=testVar%>
-    </p>
+    <header>
+        <%- include('./partials/header.ejs') %>
+    </header>
+    <h1>Here are all the Posts:</h1>
+
+    <% for (let i=0; i < posts.length; i++) { %>
+        <div>
+            <h4>
+                <%=posts[i].author%>
+            </h4>
+            <p>
+                <%=posts[i].postBody%>
+            </p>
+            <p>
+                <%=posts[i].tags%>
+            </p>
+            <p>
+                <a href="/posts/<%=posts[i]._id%>">View this post on its own</a>
+            </p>
+            <p>
+                <%=posts[i].mentions%>
+            </p>
+            <% console.log("comparison " +posts[i].createdAt + posts[i].updatedAt) %> 
+            <%if (posts[i].createdAt==posts[i].updatedAt) {%>
+                <p>
+                    <%=posts[i].createdAt%>
+                </p>
+
+                <%} else {%>
+                    <p>
+                        <%=posts[i].updatedAt + " edited" %>
+                </p>
+                <%}%>
+        </div>
+        <% } %>
+            <a href="/">LANDING PAGE</a>
+
 </body>
 
 </html>

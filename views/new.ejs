@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head.ejs') %>
+</head>
+
+<body>
+    <header>
+        <%- include('./partials/header.ejs') %>
+    </header>
+    <h1>Edit Post Page</h1>
+    <form action="/posts" method="POST">
+        Author:<input type="text" name="author" /><br />
+        Post Body:<input type="text" name="postBody" /><br />
+        Tags:<input type="text" name="tags" /><br />
+        mentions:<input type="text" name="tags" /><br />
+        <br />
+        <input type="submit" name="" value="Submit New Post">
+    </form>
+</body>
+
+</html>
