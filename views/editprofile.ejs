@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head.ejs') %>
+</head>
+
+<body>
+    <header>
+        <%- include('./partials/header.ejs') %>
+    </header>
+    <main>
+        <h1>Edit Profile</h1>
+        <form action="/profile/<%=currentUser._id%>?_method=PUT" method="POST">
+            Username:<input type="text" name="username" value="<%=currentUser.username%>" /><br />
+            Profile Picture URL:<input type="text" name="profilePicURL" value="<%=currentUser.profilePicURL%>" /><br />
+            About Me:<input type="text" name="aboutMe" value="<%=currentUser.aboutMe%>" /><br />
+            <br />
+            <input type="submit" name="" value="Submit Changes">
+        </form>
+    </main>
+</body>
+
+</html>

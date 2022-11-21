@@ -10,8 +10,22 @@
         <%- include('./partials/header.ejs') %>
     </header>
     <main>
-        <h1>Profile Page</h1>
-        <% console.log(currentUser) %>
+        <h1>
+            <%=profile.username%>
+        </h1>
+        <% if (profile.isModerator) {%>
+            <p>Moderator</p>
+            <% } %>
+                <% if (profile.profilePicURL && profile.profilePicURL !="" ) {%>
+                    <div class="container">
+                        <img src="<%= profile.profilePicURL %> " alt="Profile Picture">
+                    </div>
+                    <% } %>
+                        <div class="container">
+                            <p>
+                                <%= profile.aboutMe %>
+                            </p>
+                        </div>
     </main>
 </body>
 

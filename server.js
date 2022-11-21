@@ -57,6 +57,7 @@ app.use(methodOverride('_method'));
 // route to post new post
 app.post('/posts', isAuthenticated, (req, res) => {
     req.body.author = req.session.currentUser.username
+    req.body.posterID = req.session.currentUser._id
     MicroPost.create(req.body, (error, createdItem) => {
         res.redirect('/feed')
     })
@@ -117,16 +118,39 @@ app.get('/posts/:id/edit', isAuthenticated, (req, res) => {
 /////////////////
 
 app.get('/profile/:id', (req, res) => {
-    User.findById(req.params.id, (error, foundProfile) => {
-        res.render(
-            'profile.ejs',
-            {
-                profile: foundProfile,
-                currentUser: req.session.currentUser
-            }
-        )
+    User.findById(req.params.id, (err, foundProfile) => {
+        if (err) {
+            res.send('profile not found!')
+        } else {
+
+            res.render(
+                'profile.ejs',
+                {
+                    currentUser: req.session.currentUser,
+                    profile: foundProfile
+                }
+            )
+        }
     })
 })
+
+app.get('/editprofile', isAuthenticated, (req, res) => {
+    res.render(
+        'editprofile.ejs',
+        {
+            currentUser: req.session.currentUser,
+        }
+    )
+}
+)
+
+//update profile PUT route
+app.put('/profile/:id', isAuthenticated, (req, res) => {
+    User.findByIdAndUpdate(req.params.id, req.body, (err, updatedModel) => {
+        res.redirect('/feed');
+    });
+})
+
 
 //delete route
 app.delete('/posts/:id', isAuthenticated, (req, res) => {
