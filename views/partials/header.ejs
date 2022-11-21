@@ -1,15 +1,31 @@
-<nav>
-    <a href="/">LANDING PAGE</a>
-    <a href="/feed">POST FEED</a>
+<nav class="navbar">
+    <div class="navbar-item">
+        <a href="/">LANDING PAGE</a>
+    </div>
+    <div class="navbar-item">
+        <a href="/feed">POST FEED</a>
+    </div>
     <% if (currentUser) {%>
-        Welcome <%=currentUser.username %>
+        <div class="navbar-item">
+            Welcome <%=currentUser.username %>
+        </div>
+        <div class="navbar-item">
             <form action="/endsession?_method=DELETE" method="POST">
                 <input type="submit" value="Log Out" />
             </form>
+        </div>
+        <div class="navbar-item">
             <a href="/editprofile">My Profile</a>
+        </div>
+        <div class="navbar-item">
             <a href="/new">NEW POST</a>
-            <%} else { %>
+        </div>
+        <%} else { %>
+            <div class="navbar-item">
                 <a href="/newuser">Sign Up</a>
+            </div>
+            <div class="navbar-item">
                 <a href="/login">Log In</a>
-                <% } %>
+            </div>
+            <% } %>
 </nav>
