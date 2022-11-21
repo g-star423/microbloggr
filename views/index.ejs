@@ -28,7 +28,6 @@
             <p>
                 <%=posts[i].mentions%>
             </p>
-            <% console.log("comparison " +posts[i].createdAt + posts[i].updatedAt) %> 
             <%if (posts[i].createdAt==posts[i].updatedAt) {%>
                 <p>
                     <%=posts[i].createdAt%>
@@ -37,8 +36,8 @@
                 <%} else {%>
                     <p>
                         <%=posts[i].updatedAt + " edited" %>
-                </p>
-                <%}%>
+                    </p>
+                    <%}%>
         </div>
         <% } %>
             <a href="/">LANDING PAGE</a>

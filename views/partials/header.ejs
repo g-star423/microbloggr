@@ -1,3 +1,14 @@
-<a href="/new">NEW POST</a>
-<a href="/">LANDING PAGE</a>
-<a href="/feed">POST FEED</a>
+<nav>
+    <a href="/new">NEW POST</a>
+    <a href="/">LANDING PAGE</a>
+    <a href="/feed">POST FEED</a>
+    <% if (currentUser) {%>
+        Welcome <%=currentUser.username %>
+            <form action="/endsession?_method=DELETE" method="POST">
+                <input type="submit" value="Log Out" />
+            </form>
+            <%} else { %>
+                <a href="/newuser">Sign Up</a>
+                <a href="/login">Log In</a>
+                <% } %>
+</nav>
