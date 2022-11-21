@@ -19,17 +19,21 @@
         <%=post.tags%>
     </p>
     <p>
-        <%=post.createdAt%>
+        Created on: <%=post.createdAt.toString().slice(0, 16)%>
     </p>
-    <p>
-        <%=post.updatedAt%>
-    </p>
-    <a href="/posts/<%= post._id %>/edit">Edit this post</a>
-    <form action="/posts/<%=post._id%>?_method=DELETE" method="POST">
-        <input type="submit" value="DELETE">
-    </form>
+    <% if (post.createdAt.toString() !=post.updatedAt.toString()) {%>
+        <p>
+            Updated On: <%=post.updatedAt.toString().slice(0, 16)%>
+        </p>
+        <% } %>
+            <% if (currentUser) {%>
+                <a class="button is-warning" href="/posts/<%= post._id %>/edit">Edit this post</a>
+                <form action="/posts/<%=post._id%>?_method=DELETE" method="POST">
+                    <input class='button is-warning' type="submit" value="Delete Post">
+                </form>
 
-    <a>Delete this post</a>
+                <a>Delete this post</a>
+                <% } %>
 </body>
 
 </html>

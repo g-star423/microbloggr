@@ -28,6 +28,9 @@ function isAuthenticated(req, res, next) {
         res.redirect('/login')
     }
 }
+// function isAuthenticatedandAuthorized(req, res, next) {
+//     if (req.secret.currentUser)
+// }
 
 
 const mongoose = require('mongoose');
@@ -36,7 +39,7 @@ const MicroPost = require('./models/postSchema.js');
 /////////////////
 // Middleware
 /////////////////
-app.use(express.static('public'))
+app.use(express.static('public')) // letting express know where the static folder is
 app.use(express.urlencoded({ extended: true }));// standard - this is just how you get url encoded data into JSON
 app.use(methodOverride('_method'));
 
@@ -52,8 +55,9 @@ app.use(methodOverride('_method'));
 // })
 
 // route to post new post
-app.post('/posts', (req, res) => {
-    MicroPost.create(req.body, (error, createdFruit) => {
+app.post('/posts', isAuthenticated, (req, res) => {
+    req.body.author = req.session.currentUser.username
+    MicroPost.create(req.body, (error, createdItem) => {
         res.redirect('/feed')
     })
 })
@@ -66,7 +70,7 @@ app.get('/', (req, res) => {// add logic so if user is logged in, redirect to fe
     })
 })
 // route to new post page
-app.get('/new', (req, res) => {
+app.get('/new', isAuthenticated, (req, res) => {
     res.render('new.ejs', {
         currentUser: req.session.currentUser
     });
@@ -96,7 +100,7 @@ app.get('/posts/:id', (req, res) => {
     })
 })
 
-app.get('/posts/:id/edit', (req, res) => {
+app.get('/posts/:id/edit', isAuthenticated, (req, res) => {
     MicroPost.findById(req.params.id, (error, foundPost) => {
         res.render(
             'update.ejs',
@@ -108,6 +112,22 @@ app.get('/posts/:id/edit', (req, res) => {
     })
 })
 
+/////////////////
+// USER PROFILE
+/////////////////
+
+app.get('/profile/:id', (req, res) => {
+    User.findById(req.params.id, (error, foundProfile) => {
+        res.render(
+            'profile.ejs',
+            {
+                profile: foundProfile,
+                currentUser: req.session.currentUser
+            }
+        )
+    })
+})
+
 //delete route
 app.delete('/posts/:id', isAuthenticated, (req, res) => {
     MicroPost.findByIdAndRemove(req.params.id, (error, data) => {
@@ -115,8 +135,8 @@ app.delete('/posts/:id', isAuthenticated, (req, res) => {
     })
     // res.send('deleting...');
 })
-
-app.put('/posts/:id', (req, res) => {
+//update post
+app.put('/posts/:id', isAuthenticated, (req, res) => {
     MicroPost.findByIdAndUpdate(req.params.id, req.body, (err, updatedModel) => {
         res.redirect('/feed');
     });

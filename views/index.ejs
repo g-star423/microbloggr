@@ -12,36 +12,46 @@
     <h1>Here are all the Posts:</h1>
 
     <% for (let i=0; i < posts.length; i++) { %>
-        <div>
-            <h4>
-                <%=posts[i].author%>
-            </h4>
-            <p>
-                <%=posts[i].postBody%>
-            </p>
-            <p>
-                <%=posts[i].tags%>
-            </p>
-            <p>
-                <a href="/posts/<%=posts[i]._id%>">View this post on its own</a>
-            </p>
-            <p>
-                <%=posts[i].mentions%>
-            </p>
-            <%if (posts[i].createdAt==posts[i].updatedAt) {%>
+        <div class="container post-container">
+            <div class="row">
+                <h4>
+                    <%=posts[i].author%>
+                </h4>
+            </div>
+            <div class="row">
                 <p>
-                    <%=posts[i].createdAt%>
+                    <%=posts[i].postBody%>
                 </p>
-
-                <%} else {%>
+            </div>
+            <div class="row">
+                <p>
+                    <%=posts[i].tags%>
+                </p>
+            </div>
+            <div class="row">
+                <p>
+                    <a href="/posts/<%=posts[i]._id%>">View this post on its own</a>
+                </p>
+            </div>
+            <div class="row">
+                <p>
+                    <%=posts[i].mentions%>
+                </p>
+            </div>
+            <div class="row">
+                <%if (posts[i].createdAt.toString()==posts[i].updatedAt.toString()) {%>
                     <p>
-                        <%=posts[i].updatedAt + " edited" %>
+                        <%=posts[i].createdAt.toString().slice(0, 16)%>
                     </p>
-                    <%}%>
+
+                    <%} else {%>
+                        <p>
+                            <%=posts[i].updatedAt.toString().slice(0, 16) + " (edited)" %>
+                        </p>
+                        <%}%>
+            </div>
         </div>
         <% } %>
-            <a href="/">LANDING PAGE</a>
-
 </body>
 
 </html>
