@@ -4,3 +4,22 @@
     border-radius: 5px;
     margin-bottom: 1em;
 }
+
+/* color scheme  */
+/* {"Tyrian Purple":"4a1232","Carnation Pink":"f7accf","Alice Blue":"e8f0ff","Medium Slate Blue":"6874e8","Fern Green":"5b7553"} */
+
+.button-width {
+    min-width: 200px;
+}
+
+body {
+    background: #e8f0ff;
+}
+
+.logo-image {
+    height: 70px;
+}
+
+.card {
+    max-width: 600px;
+}
