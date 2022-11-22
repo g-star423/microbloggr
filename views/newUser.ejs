@@ -9,11 +9,21 @@
     <header>
         <%- include('./partials/header.ejs') %>
     </header>
-    <h1>New User Page</h1>
+    <h1 class="title">New User Page</h1>
     <form action="/newuser" method="POST">
-        Username:<input type="text" name="username" /><br />
-        Password:<input type="password" name="password" /><br />
-        <input type="submit" name="" value="Submit New User">
+        <div class="field">
+            <label class="label" for="username">Username</label><br />
+            <div class="control">
+                <input class="input" id="username" type="text" name="username" /><br />
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="password">Password</label><br />
+            <div class="control">
+                <input class="input" id="password" type="password" name="password" /><br />
+            </div>
+        </div>
+        <input class="button is-primary" type="submit" name="" value="Submit New User">
     </form>
 </body>
 

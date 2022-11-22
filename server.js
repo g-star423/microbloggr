@@ -21,16 +21,33 @@ app.use(
     })
 )
 
-function isAuthenticated(req, res, next) {
+function isAuthenticated(req, res, next) {// for general authentication
     if (req.session.currentUser) {
         return next();
     } else {
         res.redirect('/login')
     }
 }
-// function isAuthenticatedandAuthorized(req, res, next) {
-//     if (req.secret.currentUser)
-// }
+
+function isAuthenticatedPost(req, res, next) { // will lock down put and delete routes that update posts by ID to only users that match post's poster ID
+    MicroPost.findById(req.params.id, (error, foundPost) => {
+        if (req.session.currentUser._id === foundPost.posterID || req.session.currentUser.isModerator) {
+            return next();
+        } else {
+            res.send('not authorized');
+        }
+    })
+}
+
+function isAuthenticatedProfile(req, res, next) { // will lock down put route for user profile update using user's id
+    if (req.session.currentUser._id === req.params.id) {
+        return next();
+    } else {
+        res.send('not authorized');
+    }
+}
+
+
 
 
 const mongoose = require('mongoose');
@@ -67,13 +84,15 @@ app.post('/posts', isAuthenticated, (req, res) => {
 app.get('/', (req, res) => {// add logic so if user is logged in, redirect to feed page
     res.render('landing.ejs', {
         pageName: "Welcome!",
-        currentUser: req.session.currentUser
+        currentUser: req.session.currentUser,
+        pageTitle: "FLIMFLAM"
     })
 })
 // route to new post page
 app.get('/new', isAuthenticated, (req, res) => {
     res.render('new.ejs', {
-        currentUser: req.session.currentUser
+        currentUser: req.session.currentUser,
+        pageTitle: "New Post"
     });
 });
 
@@ -84,7 +103,8 @@ app.get('/feed', (req, res) => {
         res.render('index.ejs', {
             posts: foundPosts,
             pageName: 'Post Feed',
-            currentUser: req.session.currentUser
+            currentUser: req.session.currentUser,
+            pageTitle: "FLIMFLAM - What's Happening"
         })
     })
 })
@@ -95,11 +115,14 @@ app.get('/posts/:id', (req, res) => {
             'show.ejs',
             {
                 post: foundPost,
-                currentUser: req.session.currentUser
+                currentUser: req.session.currentUser,
+                pageTitle: "Showing Post"
             }
         );
     })
 })
+
+
 
 app.get('/posts/:id/edit', isAuthenticated, (req, res) => {
     MicroPost.findById(req.params.id, (error, foundPost) => {
@@ -107,7 +130,8 @@ app.get('/posts/:id/edit', isAuthenticated, (req, res) => {
             'update.ejs',
             {
                 post: foundPost,
-                currentUser: req.session.currentUser
+                currentUser: req.session.currentUser,
+                pageTitle: "Editing Post"
             }
         );
     })
@@ -127,7 +151,8 @@ app.get('/profile/:id', (req, res) => {
                 'profile.ejs',
                 {
                     currentUser: req.session.currentUser,
-                    profile: foundProfile
+                    profile: foundProfile,
+                    pageTitle: "FLIMFLAM - " + foundProfile.username
                 }
             )
         }
@@ -139,13 +164,14 @@ app.get('/editprofile', isAuthenticated, (req, res) => {
         'editprofile.ejs',
         {
             currentUser: req.session.currentUser,
+            pageTitle: "FLIMFLAM - Edit Profile"
         }
     )
 }
 )
 
 //update profile PUT route
-app.put('/profile/:id', isAuthenticated, (req, res) => {
+app.put('/profile/:id', isAuthenticatedProfile, (req, res) => {
     User.findByIdAndUpdate(req.params.id, req.body, (err, updatedModel) => {
         res.redirect('/feed');
     });
@@ -153,14 +179,14 @@ app.put('/profile/:id', isAuthenticated, (req, res) => {
 
 
 //delete route
-app.delete('/posts/:id', isAuthenticated, (req, res) => {
+app.delete('/posts/:id', isAuthenticatedPost, (req, res) => {
     MicroPost.findByIdAndRemove(req.params.id, (error, data) => {
         res.redirect('/feed');
     })
     // res.send('deleting...');
 })
 //update post
-app.put('/posts/:id', isAuthenticated, (req, res) => {
+app.put('/posts/:id', isAuthenticatedPost, (req, res) => {
     MicroPost.findByIdAndUpdate(req.params.id, req.body, (err, updatedModel) => {
         res.redirect('/feed');
     });
@@ -173,14 +199,16 @@ app.put('/posts/:id', isAuthenticated, (req, res) => {
 // display newuser page
 app.get('/newuser', (req, res) => {
     res.render('newUser.ejs', {
-        currentUser: req.session.currentUser
+        currentUser: req.session.currentUser,
+        pageTitle: "FLIMFLAM - Sign Up!"
     })
 })
 
 // display login page
 app.get('/login', (req, res) => {
     res.render('login.ejs', {
-        currentUser: req.session.currentUser
+        currentUser: req.session.currentUser,
+        pageTitle: "FLIMFLAM - Log On!"
     })
 })
 

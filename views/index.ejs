@@ -11,7 +11,7 @@
     </header>
     <h1>FLIMFLAM FEED</h1>
     <% for (let i=0; i < posts.length; i++) { %>
-        <div class="card">
+        <div class="card mb-4 ml-4 mr-4">
             <div class="card-header">
                 <h4>
                     <a href="/profile/<%=posts[i].posterID%>">
@@ -20,36 +20,31 @@
                 </h4>
             </div>
             <div class="card-content">
-                <p>
+                <p class="mb-4">
                     <%=posts[i].postBody%>
                 </p>
-            </div>
-            <div class="card-content">
                 <p>
-                    <%=posts[i].tags%>
+                    Tags: <%=posts[i].tags%>
                 </p>
-            </div>
-            <div class="card-content">
                 <p>
-                    <a href="/posts/<%=posts[i]._id%>">View this post on its own</a>
+                    Mentions: <%=posts[i].mentions%>
                 </p>
-            </div>
-            <div class="card-content">
-                <p>
-                    <%=posts[i].mentions%>
-                </p>
-            </div>
-            <div class="card-content">
-                <%if (posts[i].createdAt.toString()==posts[i].updatedAt.toString()) {%>
-                    <p>
-                        <%=posts[i].createdAt.toString().slice(0, 16)%>
-                    </p>
-
-                    <%} else {%>
+                <% if (currentUser) {%>
+                    <% if (currentUser._id===posts[i].posterID || currentUser.isModerator) {%>
                         <p>
-                            <%=posts[i].updatedAt.toString().slice(0, 16) + " (edited)" %>
+                            <a href="/posts/<%=posts[i]._id%>">View this post on its own and edit</a>
                         </p>
-                        <%}%>
+                        <%}}%>
+                            <%if (posts[i].createdAt.toString()==posts[i].updatedAt.toString()) {%>
+                                <p>
+                                    <%=posts[i].createdAt.toString().slice(0, 16)%>
+                                </p>
+
+                                <%} else {%>
+                                    <p>
+                                        <%=posts[i].updatedAt.toString().slice(0, 16) + " (edited)" %>
+                                    </p>
+                                    <%}%>
             </div>
         </div>
         <% } %>
