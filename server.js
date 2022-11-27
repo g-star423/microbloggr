@@ -47,7 +47,13 @@ function isAuthenticatedProfile(req, res, next) { // will lock down put route fo
     }
 }
 
+function returnTags(postBody) {
+    return postBody.match(/#[a-z]+/gi)
+}
 
+function returnMentions(postBody) {
+    return postBody.match(/@[a-z]+/gi)
+}
 
 
 const mongoose = require('mongoose');
@@ -75,6 +81,8 @@ app.use(methodOverride('_method'));
 app.post('/posts', isAuthenticated, (req, res) => {
     req.body.author = req.session.currentUser.username
     req.body.posterID = req.session.currentUser._id
+    req.body.tags = returnTags(req.body.postBody)
+    req.body.mentions = returnMentions(req.body.postBody)
     MicroPost.create(req.body, (error, createdItem) => {
         res.redirect('/feed')
     })
@@ -96,18 +104,31 @@ app.get('/new', isAuthenticated, (req, res) => {
     });
 });
 
-
+// old version, not sorting by date, DELETE BEFORE FINAL DEPLOY
 //index page (news feed page)
+// app.get('/feed', (req, res) => {
+//     MicroPost.find({}, (error, foundPosts) => {
+//         res.render('index.ejs', {
+//             posts: foundPosts,
+//             pageName: 'Post Feed',
+//             currentUser: req.session.currentUser,
+//             pageTitle: "FLIMFLAM - What's Happening"
+//         })
+//     })
+// })
 app.get('/feed', (req, res) => {
-    MicroPost.find({}, (error, foundPosts) => {
-        res.render('index.ejs', {
-            posts: foundPosts,
-            pageName: 'Post Feed',
-            currentUser: req.session.currentUser,
-            pageTitle: "FLIMFLAM - What's Happening"
+    MicroPost.find({}).sort({ updatedAt: -1 }).exec(
+
+        (error, foundPosts) => {
+            res.render('index.ejs', {
+                posts: foundPosts,
+                pageName: 'Post Feed',
+                currentUser: req.session.currentUser,
+                pageTitle: "FLIMFLAM - What's Happening"
+            })
         })
-    })
 })
+
 
 app.get('/posts/:id', (req, res) => {
     MicroPost.findById(req.params.id, (error, foundPost) => {
