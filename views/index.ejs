@@ -11,7 +11,7 @@
     </header>
     <h1>FLIMFLAM FEED</h1>
     <% for (let i=0; i < posts.length; i++) { %>
-        <div class="card mb-4 ml-4 mr-4">
+        <div class="card">
             <div class="card-header">
                 <h4>
                     <a href="/profile/<%=posts[i].posterID%>">
@@ -36,12 +36,12 @@
                         </p>
                         <%}}%>
                             <%if (posts[i].createdAt.toString()==posts[i].updatedAt.toString()) {%>
-                                <p>
+                                <p class="help">
                                     <%=posts[i].createdAt.toString().slice(0, 16)%>
                                 </p>
 
                                 <%} else {%>
-                                    <p>
+                                    <p class="help">
                                         <%=posts[i].updatedAt.toString().slice(0, 16) + " (edited)" %>
                                     </p>
                                     <%}%>
