@@ -167,15 +167,17 @@ app.get('/profile/:id', (req, res) => {
         if (err) {
             res.send('profile not found!')
         } else {
-
-            res.render(
-                'profile.ejs',
-                {
-                    currentUser: req.session.currentUser,
-                    profile: foundProfile,
-                    pageTitle: "FLIMFLAM - " + foundProfile.username
-                }
-            )
+            MicroPost.find({ posterID: req.params.id }, (err, foundPosts) => {
+                res.render(
+                    'profile.ejs',
+                    {
+                        currentUser: req.session.currentUser,
+                        profile: foundProfile,
+                        pageTitle: "FLIMFLAM - " + foundProfile.username,
+                        posts: foundPosts
+                    }
+                )
+            })
         }
     })
 })
