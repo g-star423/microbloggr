@@ -48,16 +48,29 @@ function isAuthenticatedProfile(req, res, next) { // will lock down put route fo
 }
 
 function returnTags(postBody) {
-    return postBody.match(/#[a-z]+/gi)
+    let tags = postBody.match(/#[a-z]+/gi)
+    let empty = []
+    if (tags) {
+        return tags
+    } else {
+        return empty
+    }
 }
 
 function returnMentions(postBody) {
-    return postBody.match(/@[a-z]+/gi)
+    let mentions = postBody.match(/@[a-z]+/gi)
+    let empty = []
+    if (mentions) {
+        return mentions
+    } else {
+        return empty
+    }
 }
 
 
 const mongoose = require('mongoose');
 const MicroPost = require('./models/postSchema.js');
+const e = require('express');
 
 /////////////////
 // Middleware
