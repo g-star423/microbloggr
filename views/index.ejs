@@ -14,7 +14,7 @@
         <div class="card">
             <div class="card-header">
                 <h4>
-                    <a href="/profile/<%=posts[i].posterID%>">
+                    <a href="/profile/<%=posts[i].author%>">
                         <%=posts[i].author%>
                     </a>
                 </h4>
@@ -24,10 +24,20 @@
                     <%=posts[i].postBody%>
                 </p>
                 <p>
-                    Tags: <%=posts[i].tags%>
+                    Tags:
+                    <% for (let z=0; z < posts[i].tags.length; z++) { %>
+                        <a href="/feed/search/%23<%= posts[i].tags[z].slice(1) %> ">
+                            <%= posts[i].tags[z] %>
+                        </a>
+                        <% } %>
                 </p>
                 <p>
-                    Mentions: <%=posts[i].mentions%>
+                    Mentions:
+                    <% for (let z=0; z < posts[i].mentions.length; z++) { %>
+                        <a href="/profile/<%= posts[i].mentions[z].slice(1) %> ">
+                            <%= posts[i].mentions[z] %>
+                        </a>
+                        <% } %>
                 </p>
                 <% if (currentUser) {%>
                     <% if (currentUser._id===posts[i].posterID || currentUser.isModerator) {%>

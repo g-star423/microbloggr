@@ -103,22 +103,9 @@ app.get('/new', isAuthenticated, (req, res) => {
         pageTitle: "New Post"
     });
 });
-
-// old version, not sorting by date, DELETE BEFORE FINAL DEPLOY
-//index page (news feed page)
-// app.get('/feed', (req, res) => {
-//     MicroPost.find({}, (error, foundPosts) => {
-//         res.render('index.ejs', {
-//             posts: foundPosts,
-//             pageName: 'Post Feed',
-//             currentUser: req.session.currentUser,
-//             pageTitle: "FLIMFLAM - What's Happening"
-//         })
-//     })
-// })
+// route to news feed
 app.get('/feed', (req, res) => {
     MicroPost.find({}).sort({ updatedAt: -1 }).exec(
-
         (error, foundPosts) => {
             res.render('index.ejs', {
                 posts: foundPosts,
@@ -128,8 +115,19 @@ app.get('/feed', (req, res) => {
             })
         })
 })
-
-
+// route to search posts by a tag - %23 must replace #, because # has a different meaning in a URL
+app.get('/feed/search/:tag', (req, res) => {
+    MicroPost.find({ tags: req.params.tag }).sort({ updatedAt: -1 }).exec(
+        (error, foundPosts) => {
+            res.render('index.ejs', {
+                posts: foundPosts,
+                pageName: 'Post Feed',
+                currentUser: req.session.currentUser,
+                pageTitle: "FLIMFLAM - What's Happening"
+            })
+        })
+})
+// route to display a specific post by ID
 app.get('/posts/:id', (req, res) => {
     MicroPost.findById(req.params.id, (error, foundPost) => {
         res.render(
@@ -144,7 +142,7 @@ app.get('/posts/:id', (req, res) => {
 })
 
 
-
+//show to edit post
 app.get('/posts/:id/edit', isAuthenticated, (req, res) => {
     MicroPost.findById(req.params.id, (error, foundPost) => {
         res.render(
@@ -162,12 +160,12 @@ app.get('/posts/:id/edit', isAuthenticated, (req, res) => {
 // USER PROFILE
 /////////////////
 
-app.get('/profile/:id', (req, res) => {
-    User.findById(req.params.id, (err, foundProfile) => {
+app.get('/profile/:username', (req, res) => {
+    User.findOne({ username: req.params.username }, (err, foundProfile) => {
         if (err) {
             res.send('profile not found!')
         } else {
-            MicroPost.find({ posterID: req.params.id }, (err, foundPosts) => {
+            MicroPost.find({ author: req.params.username }).sort({ updatedAt: -1 }).exec((err, foundPosts) => {
                 res.render(
                     'profile.ejs',
                     {
