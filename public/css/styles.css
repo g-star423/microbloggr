@@ -8,10 +8,6 @@
 /* color scheme  */
 /* {"Tyrian Purple":"4a1232","Carnation Pink":"f7accf","Alice Blue":"e8f0ff","Medium Slate Blue":"6874e8","Fern Green":"5b7553"} */
 
-.button-width {
-    min-width: 200px;
-}
-
 body {
     background: #e8f0ff;
     font-family: 'Outfit', sans-serif;
@@ -26,6 +22,7 @@ body {
     margin-left: auto;
     margin-right: auto;
     width: 33%;
+    max-width: 200px;
 }
 
 .card {
@@ -40,10 +37,26 @@ h1 {
 }
 
 button {
+    min-width: 12em;
     margin-bottom: 1em;
+
 }
 
-/* CSS */
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hero-body {
+    text-align: center;
+}
+
+.subtitle {
+    margin-bottom: 2em;
+}
+
+/* https://getcssscan.com/css-buttons-examples */
 .button-54 {
     font-family: "Open Sans", sans-serif;
     font-size: 16px;
@@ -55,7 +68,6 @@ button {
     border: 3px solid;
     padding: 0.25em 0.5em;
     box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px, 3px 3px 0px 0px, 4px 4px 0px 0px, 5px 5px 0px 0px;
-    position: relative;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
