@@ -276,7 +276,6 @@ app.get('/scroll/:lastPost', (req, res) => {
             if (!endOfFeed) {
                 res.send(foundPosts)
             } else {
-                console.log('reached end of feed');
                 res.send(false)
             }
         })
