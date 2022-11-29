@@ -3,8 +3,8 @@
 
 <head>
     <%- include('./partials/head.ejs') %>
-        <script src="/infiniteScroll.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="/infiniteScroll.js"></script>
 </head>
 
 <body>
@@ -24,7 +24,7 @@
                     </h4>
                 </div>
                 <div class="card-content">
-                    <p class="mb-4">
+                    <p class="">
                         <%=posts[i].postBody%>
                     </p>
                     <p>
@@ -46,17 +46,17 @@
                     <% if (currentUser) {%>
                         <% if (currentUser._id===posts[i].posterID || currentUser.isModerator) {%>
                             <p>
-                                <a href="/posts/<%=posts[i]._id%>">View this post on its own and edit</a>
+                                <a href="/posts/<%=posts[i]._id%>">Edit this post</a>
                             </p>
                             <%}}%>
                                 <%if (posts[i].createdAt.toString()==posts[i].updatedAt.toString()) {%>
-                                    <p class="help">
-                                        <%=posts[i].createdAt.toString().slice(0, 16)%>
+                                    <p class="date">
+                                        Posted: <%=posts[i].createdAt.toString().slice(0, 16)%>
                                     </p>
 
                                     <%} else {%>
-                                        <p class="help">
-                                            <%=posts[i].updatedAt.toString().slice(0, 16) + " (edited)" %>
+                                        <p class="date">
+                                            Posted: <%=posts[i].updatedAt.toString().slice(0, 16) + " (edited)" %>
                                         </p>
                                         <%}%>
                 </div>

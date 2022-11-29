@@ -12,10 +12,7 @@
     <main>
         <h1>Edit Post Page</h1>
         <form action="/posts/<%=post._id%>?_method=PUT" method="POST">
-            Author:<input type="text" name="author" value="<%=post.author%>" /><br />
             Post Body:<input type="text" name="postBody" value="<%=post.postBody%>" /><br />
-            Tags:<input type="text" name="tags" value="<%=post.tags%>" /><br />
-            mentions:<input type="text" name="mentions" value="<%=post.mentions%>" /><br />
             <br />
             <input type="submit" name="" class="button is-primary is-medium is-rounded button-width"
                 value="Submit Changes">

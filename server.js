@@ -118,7 +118,7 @@ app.get('/new', isAuthenticated, (req, res) => {
 });
 // route to news feed
 app.get('/feed', (req, res) => {
-    MicroPost.find({}).sort({ updatedAt: -1 }).limit(10).exec(
+    MicroPost.find({}).sort({ createdAt: -1 }).limit(10).exec(
         (error, foundPosts) => {
             res.render('index.ejs', {
                 posts: foundPosts,
@@ -130,7 +130,7 @@ app.get('/feed', (req, res) => {
 })
 // route to search posts by a tag - %23 must replace #, because # has a different meaning in a URL
 app.get('/feed/search/:tag', (req, res) => {
-    MicroPost.find({ tags: req.params.tag }).sort({ updatedAt: -1 }).exec(
+    MicroPost.find({ tags: req.params.tag }).sort({ createdAt: -1 }).exec(
         (error, foundPosts) => {
             res.render('index.ejs', {
                 posts: foundPosts,
@@ -220,8 +220,12 @@ app.delete('/posts/:id', isAuthenticatedPost, (req, res) => {
     })
     // res.send('deleting...');
 })
-//update post
+// route to PUT updated post
 app.put('/posts/:id', isAuthenticatedPost, (req, res) => {
+    req.body.author = req.session.currentUser.username
+    req.body.posterID = req.session.currentUser._id
+    req.body.tags = returnTags(req.body.postBody)
+    req.body.mentions = returnMentions(req.body.postBody)
     MicroPost.findByIdAndUpdate(req.params.id, req.body, (err, updatedModel) => {
         res.redirect('/feed');
     });
@@ -261,7 +265,7 @@ app.post('/newuser', (req, res) => {// code mostly from auth lesson in project 2
 })
 
 ///////////////////////////////////
-// POST Route for Infinite Scroll
+// GET Route for Infinite Scroll
 ///////////////////////////////////
 let endOfFeed = false;
 app.get('/scroll/:lastPost', (req, res) => {
@@ -280,6 +284,11 @@ app.get('/scroll/:lastPost', (req, res) => {
             }
         })
 })
+
+app.get('/userauth', (req, res) => {
+    res.send(req.session.currentUser)
+})
+
 
 // login POST route
 app.post('/login', (req, res) => {
