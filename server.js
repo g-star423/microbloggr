@@ -118,7 +118,7 @@ app.get('/new', isAuthenticated, (req, res) => {
 });
 // route to news feed
 app.get('/feed', (req, res) => {
-    MicroPost.find({}).sort({ updatedAt: -1 }).exec(
+    MicroPost.find({}).sort({ updatedAt: -1 }).limit(10).exec(
         (error, foundPosts) => {
             res.render('index.ejs', {
                 posts: foundPosts,
@@ -260,11 +260,25 @@ app.post('/newuser', (req, res) => {// code mostly from auth lesson in project 2
     })
 })
 
-// POST route for infinite scroll to request more data
+///////////////////////////////////
+// POST Route for Infinite Scroll
+///////////////////////////////////
+let endOfFeed = false;
 app.get('/scroll/:lastPost', (req, res) => {
-    MicroPost.find({}).sort({ updatedAt: -1 }).exec(
+    MicroPost.find({}).sort({ updatedAt: -1 }).skip(req.params.lastPost).limit(10).exec(
         (error, foundPosts) => {
-            res.send(foundPosts)
+            if (error) {
+                console.log(error);
+            }
+            if (foundPosts.length === 0) {
+                endOfFeed = true;
+            }
+            if (!endOfFeed) {
+                res.send(foundPosts)
+            } else {
+                console.log('reached end of feed');
+                res.send(false)
+            }
         })
 })
 
