@@ -175,7 +175,7 @@ app.get('/posts/:id/edit', isAuthenticated, (req, res) => {
 
 app.get('/profile/:username', (req, res) => {
     User.findOne({ username: req.params.username }, (err, foundProfile) => {
-        if (err) {
+        if (foundProfile === null) { // for some reason, for this to work, has to be strictly equal to null - just (foundprofile) doesn't work
             res.send('profile not found!')
         } else {
             MicroPost.find({ author: req.params.username }).sort({ updatedAt: -1 }).exec((err, foundPosts) => {
@@ -193,6 +193,7 @@ app.get('/profile/:username', (req, res) => {
     })
 })
 
+//route to show user profile edit page
 app.get('/editprofile', isAuthenticated, (req, res) => {
     res.render(
         'editprofile.ejs',
@@ -257,6 +258,14 @@ app.post('/newuser', (req, res) => {// code mostly from auth lesson in project 2
         console.log('user is created', createdUser)
         res.redirect('/feed')
     })
+})
+
+// POST route for infinite scroll to request more data
+app.get('/scroll/:lastPost', (req, res) => {
+    MicroPost.find({}).sort({ updatedAt: -1 }).exec(
+        (error, foundPosts) => {
+            res.send(foundPosts)
+        })
 })
 
 // login POST route
