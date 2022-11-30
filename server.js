@@ -48,7 +48,7 @@ function isAuthenticatedProfile(req, res, next) { // will lock down put route fo
 }
 
 function returnTags(postBody) {
-    let tags = postBody.match(/#[a-z]+/gi)
+    let tags = postBody.match(/#[a-z0-9]+/gi)
     let empty = []
     if (tags) {
         return tags
@@ -58,7 +58,7 @@ function returnTags(postBody) {
 }
 
 function returnMentions(postBody) {
-    let mentions = postBody.match(/@[a-z]+/gi)
+    let mentions = postBody.match(/@[a-z0-9]+/gi)
     let empty = []
     if (mentions) {
         return mentions
@@ -174,7 +174,7 @@ app.get('/posts/:id/edit', isAuthenticated, (req, res) => {
 /////////////////
 
 app.get('/profile/:username', (req, res) => {
-    User.findOne({ username: req.params.username }, (err, foundProfile) => {
+    User.findOne({ username: req.params.username.toLowerCase() }, (err, foundProfile) => {
         if (foundProfile === null) { // for some reason, for this to work, has to be strictly equal to null - just (foundprofile) doesn't work
             res.send('profile not found!')
         } else {
@@ -254,13 +254,16 @@ app.get('/login', (req, res) => {
 // new user POST route
 app.post('/newuser', (req, res) => {// code mostly from auth lesson in project 2 folder.
     req.body.password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)) // salting password before storing
+    req.body.username = req.body.username.toLowerCase() // normalizing all usernames at creation to all lower case
+
     User.create(req.body, (err, createdUser) => { //need logic to tell if username failed because not unique, or some other error message
         if (err) {
-            res.send(err);
+            res.send("user exists");
             console.log(err);
+        } else {
+            console.log('user is created', createdUser)
+            res.redirect('/feed')
         }
-        console.log('user is created', createdUser)
-        res.redirect('/feed')
     })
 })
 
@@ -293,7 +296,7 @@ app.get('/userauth', (req, res) => {
 // login POST route
 app.post('/login', (req, res) => {
     // look for username
-    User.findOne({ username: req.body.username }, (err, foundUser) => {
+    User.findOne({ username: req.body.username.toLowerCase() }, (err, foundUser) => {
         // error handling
         if (err) {
             console.log(err);

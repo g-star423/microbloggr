@@ -40,9 +40,11 @@ body {
 }
 
 .card {
+    background-color: #ffc7e1;
     max-width: 600px;
     margin-bottom: 1em;
-    border: solid black 1px;
+    border: solid #5b7553 2px;
+    box-shadow: 3px 10px #5b7553;
     border-radius: 5px;
 }
 
