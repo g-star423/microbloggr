@@ -46,7 +46,7 @@
                     <% if (currentUser) {%>
                         <% if (currentUser._id===posts[i].posterID || currentUser.isModerator) {%>
                             <p>
-                                <a href="/posts/<%=posts[i]._id%>">Edit this post</a>
+                                <a href="/posts/<%=posts[i]._id%>">View / Edit this post</a>
                             </p>
                             <%}}%>
                                 <%if (posts[i].createdAt.toString()==posts[i].updatedAt.toString()) {%>

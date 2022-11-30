@@ -1,4 +1,4 @@
-const dotenv = require('dotenv').config()
+const dotenv = require('dotenv').config() // allows for environmental variables
 
 const express = require('express');
 const app = express();
@@ -6,10 +6,8 @@ const methodOverride = require('method-override');
 // const { response, request } = require('express');
 const postSeeds = require('./models/seedData.js');
 
-// added these for auth
-const session = require('express-session')
-
 // dependencies for user auth
+const session = require('express-session')
 const bcrypt = require('bcrypt');
 const User = require('./models/userSchema.js');
 
@@ -21,7 +19,7 @@ app.use(
     })
 )
 
-function isAuthenticated(req, res, next) {// for general authentication
+function isAuthenticated(req, res, next) { // this function just checks to see if a user is logged in
     if (req.session.currentUser) {
         return next();
     } else {
@@ -31,7 +29,7 @@ function isAuthenticated(req, res, next) {// for general authentication
 
 function isAuthenticatedPost(req, res, next) { // will lock down put and delete routes that update posts by ID to only users that match post's poster ID
     MicroPost.findById(req.params.id, (error, foundPost) => {
-        if (req.session.currentUser._id === foundPost.posterID || req.session.currentUser.isModerator) {
+        if (req.session.currentUser._id === foundPost.posterID || req.session.currentUser.isModerator) { // is the post you're editing created by the same user ID you're logged in with? Or are you a moderator?
             return next();
         } else {
             res.send('not authorized');
@@ -40,7 +38,7 @@ function isAuthenticatedPost(req, res, next) { // will lock down put and delete 
 }
 
 function isAuthenticatedProfile(req, res, next) { // will lock down put route for user profile update using user's id
-    if (req.session.currentUser._id === req.params.id) {
+    if (req.session.currentUser._id === req.params.id) { // is the profile you're updating the same as the one that's logged in?
         return next();
     } else {
         res.send('not authorized');
@@ -48,7 +46,7 @@ function isAuthenticatedProfile(req, res, next) { // will lock down put route fo
 }
 
 function returnTags(postBody) {
-    let tags = postBody.match(/#[a-z0-9]+/gi)
+    let tags = postBody.match(/#[a-z0-9]+/gi) // creates an array of strings that start with a #, and include letters and numbers
     let empty = []
     if (tags) {
         return tags
@@ -58,7 +56,7 @@ function returnTags(postBody) {
 }
 
 function returnMentions(postBody) {
-    let mentions = postBody.match(/@[a-z0-9]+/gi)
+    let mentions = postBody.match(/@[a-z0-9]+/gi)// same as above
     let empty = []
     if (mentions) {
         return mentions
@@ -66,7 +64,9 @@ function returnMentions(postBody) {
         return empty
     }
 }
-
+/////////////////
+// Mongoose
+/////////////////
 
 const mongoose = require('mongoose');
 const MicroPost = require('./models/postSchema.js');
@@ -169,10 +169,11 @@ app.get('/posts/:id/edit', isAuthenticated, (req, res) => {
     })
 })
 
-/////////////////
-// USER PROFILE
-/////////////////
+///////////////////////
+// USER PROFILE ROUTES
+///////////////////////
 
+// get a profile by username
 app.get('/profile/:username', (req, res) => {
     User.findOne({ username: req.params.username.toLowerCase() }, (err, foundProfile) => {
         if (foundProfile === null) { // for some reason, for this to work, has to be strictly equal to null - just (foundprofile) doesn't work
@@ -212,6 +213,9 @@ app.put('/profile/:id', isAuthenticatedProfile, (req, res) => {
     });
 })
 
+//////////////////////////////////////////
+// Routes for updating and deleting posts
+//////////////////////////////////////////
 
 //delete route
 app.delete('/posts/:id', isAuthenticatedPost, (req, res) => {
@@ -287,7 +291,7 @@ app.get('/scroll/:lastPost', (req, res) => {
             }
         })
 })
-
+// this route will get the userauth data into the client-side JS file. Only used for displaying "edit post" links
 app.get('/userauth', (req, res) => {
     res.send(req.session.currentUser)
 })
@@ -316,21 +320,23 @@ app.post('/login', (req, res) => {
     })
 
 })
-// where delete request gets sent to
+// where session delete request gets sent to
 app.delete('/endsession', (req, res) => {
     req.session.destroy(() => {
         res.redirect('/')
     })
 })
 
-
+//////////////////////////////
+// Server info
+//////////////////////////////
 
 mongoose.connect('mongodb+srv://gstar:' + process.env.MONGO_PASSWORD + '@cluster0.lrovc1s.mongodb.net/?retryWrites=true&w=majority', () => {
     console.log('The connection with mongod is established');
 })
 
 
-// mongoose.connect('mongodb://localhost:27017/microblog', () => { // offline connection
+// mongoose.connect('mongodb://localhost:27017/microblog', () => { // offline connection for testing while offline
 //     console.log('The connection with mongod local is established');
 // })
 
