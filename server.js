@@ -265,12 +265,12 @@ app.post('/newuser', (req, res) => {// code mostly from auth lesson in project 2
 })
 
 ///////////////////////////////////
-// GET Route for Infinite Scroll
+// GET Routes for Infinite Scroll
 ///////////////////////////////////
-let endOfFeed = false;
 app.get('/scroll/:lastPost', (req, res) => {
     MicroPost.find({}).sort({ updatedAt: -1 }).skip(req.params.lastPost).limit(10).exec(
         (error, foundPosts) => {
+            let endOfFeed = false
             if (error) {
                 console.log(error);
             }

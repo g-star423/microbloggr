@@ -74,8 +74,10 @@ const jqueryget = () => {
         url: '/scroll/' + currentPostIndex // send the index to the server to let it know where the page is
     }).then(
         (data) => {
+            console.log("just got posts" + (typeof data));
             addPosts(data)
             currentPostIndex += 10;// advance posts by 10
+            console.log("just advanced post index" + currentPostIndex);
         },
         () => {
             console.log('bad request');
@@ -83,26 +85,13 @@ const jqueryget = () => {
     );
 }
 
-// const getUser = () => {
-//     $.ajax({
-//         url: '/userauth'
-//     }).then(
-//         (data) => {
-//             addPosts(data)
-//             currentPostIndex += 10;// advance posts by 10
-//         },
-//         () => {
-//             console.log('bad request');
-//         }
-//     );
-// }
-
-
 $(document).ready(() => {
     $.ajax({
         url: '/userauth'
     }).then(
         (currentUser) => {
+            displayedEndOfFeed = false; // resets values on page load
+            currentPostIndex = 10;
             userObj = currentUser
         },
         () => {

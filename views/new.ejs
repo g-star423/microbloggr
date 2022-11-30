@@ -12,7 +12,8 @@
     <h1>Edit Post Page</h1>
     <p>Use "@" to mention another user, or "#" to tag a post.</p>
     <form action="/posts" method="POST">
-        Post Body:<input class="textarea" type="text" name="postBody" placeholder="Post Text here" /><br />
+        <label class="label" for="postBody">Post:</label>
+        <textarea class="input" type="text" name="postBody" placeholder="Your post goes here" rows="3"></textarea><br />
         <br />
         <input type="submit" name="" value="Submit New Post">
     </form>

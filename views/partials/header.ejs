@@ -1,31 +1,35 @@
 <nav class="navbar">
-    <div class="navbar-brand">
-        <a href="/feed"><img src="/flimflamlogo.png" class="logo-image"></a>
-    </div>
     <div class="navbar-item">
-        <a href="/feed">Newsfeed</a>
+        <a href="/feed"><img src="/flimflamlogo.png" class="logo-image"></a>
     </div>
     <% if (currentUser) {%>
         <div class="navbar-item">
-            Welcome <%=currentUser.username %>
-        </div>
-        <div class="navbar-item">
             <form action="/endsession?_method=DELETE" method="POST">
-                <input type="submit" value="Log Out" />
+                <input type="submit" value="Log Out" class="button-54" />
             </form>
         </div>
         <div class="navbar-item">
-            <a href="/editprofile">Edit Profile</a>
+            <a class="button-54" href="/editprofile">EDIT PROFILE</a>
         </div>
         <div class="navbar-item">
-            <a href="/new">NEW POST</a>
+            <a class="button-54" href="/feed">FEED</a>
+        </div>
+        <div class="navbar-item">
+            <a class="button-54" href="/new">NEW POST</a>
         </div>
         <%} else { %>
             <div class="navbar-item">
-                <a href="/newuser">Sign Up</a>
+                <a class="button-54" href="/feed">FEED</a>
             </div>
             <div class="navbar-item">
-                <a href="/login">Log In</a>
+                <a class="button-54" href="/newuser">SIGN UP</a>
+            </div>
+            <div class="navbar-item">
+                <a class="button-54" href="/login">LOG IN</a>
             </div>
             <% } %>
 </nav>
+<% if (currentUser) {%>
+    <p id="welcome">Welcome <%=currentUser.username %>
+    </p>
+    <% } %>
