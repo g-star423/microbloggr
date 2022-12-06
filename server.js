@@ -7,9 +7,13 @@ const methodOverride = require('method-override');
 const postSeeds = require('./models/seedData.js');
 
 // dependencies for user auth
-const session = require('express-session')
+const session = require('express-session');
 const bcrypt = require('bcrypt');
 const User = require('./models/userSchema.js');
+
+// addiont more dependencies for axios requests to azure content moderator
+const axios = require('axios');
+
 
 app.use(
     session({
@@ -63,6 +67,10 @@ function returnMentions(postBody) {
     } else {
         return empty
     }
+}
+
+function moderateText(postBody) {
+
 }
 /////////////////
 // Mongoose
@@ -327,6 +335,43 @@ app.delete('/endsession', (req, res) => {
     })
 })
 
+//////////////////////////////
+// Axios Moderator Route
+//////////////////////////////
+let allMiddleware = [testAxios, isAuthenticated]
+
+let testText = "I am always so fucking late."
+function testAxios(next) {
+    axios.post('https://flim-flam-moderator.cognitiveservices.azure.com/contentmoderator/moderate/v1.0/ProcessText/Screen?autocorrect=True&PII=True&classify=True',
+        { testText }, { headers: { 'Ocp-Apim-Subscription-Key': process.env.AZURE_MODERATOR, 'Content-Type': 'text/plain' } }).then((response) => {
+            console.log(response.data);
+            let terms = response.data.Terms
+            let containsPII = Object.keys(response.data).find((el) => el === "PII")
+            if (terms || response.data.Classification.ReviewRecommended || containsPII) {
+                console.log("failed moderation");
+                if (terms) {
+                    console.log("You can't have these words: ");
+                    terms.map(el => console.log("Offensive word " + el.Term))
+                }
+                if (containsPII) {
+                    console.log("Contains personal information");
+                }
+                if (response.data.Classification.ReviewRecommended) {
+                    console.log("Your post doesn't meet our community criteria");
+                    console.log("Your inappropriate score:" + response.data.Classification.Category1.Score);
+                    console.log("Your suggestive score:" + response.data.Classification.Category2.Score);
+                    console.log("Your offensive score: " + response.data.Classification.Category3.Score);
+
+                }
+            } else {
+                return next()
+            }
+            console.log(testText);
+        })
+}
+console.log(testText);
+
+//text/plain
 //////////////////////////////
 // Server info
 //////////////////////////////
