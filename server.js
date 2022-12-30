@@ -11,7 +11,7 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const User = require('./models/userSchema.js');
 
-// addiont more dependencies for axios requests to azure content moderator
+// more dependencies for axios requests to azure content moderator
 const axios = require('axios');
 
 
@@ -69,9 +69,6 @@ function returnMentions(postBody) {
     }
 }
 
-function moderateText(postBody) {
-
-}
 /////////////////
 // Mongoose
 /////////////////
@@ -87,6 +84,8 @@ app.use(express.static('public')) // letting express know where the static folde
 app.use(express.urlencoded({ extended: true }));// standard - this is just how you get url encoded data into JSON
 app.use(methodOverride('_method'));
 
+let allMiddleware = [azureModerator, isAuthenticated]
+
 
 /////////////////
 // Routes
@@ -99,7 +98,7 @@ app.use(methodOverride('_method'));
 // })
 
 // route to post new post
-app.post('/posts', isAuthenticated, (req, res) => {
+app.post('/posts', [isAuthenticated, azureModerator], (req, res) => {
     req.body.author = req.session.currentUser.username
     req.body.posterID = req.session.currentUser._id
     req.body.tags = returnTags(req.body.postBody)
@@ -338,38 +337,45 @@ app.delete('/endsession', (req, res) => {
 //////////////////////////////
 // Axios Moderator Route
 //////////////////////////////
-let allMiddleware = [testAxios, isAuthenticated]
 
-let testText = "I am always so fucking late."
-function testAxios(next) {
+function azureModerator(req, res, next) {
+    text = req.body.postBody
     axios.post('https://flim-flam-moderator.cognitiveservices.azure.com/contentmoderator/moderate/v1.0/ProcessText/Screen?autocorrect=True&PII=True&classify=True',
-        { testText }, { headers: { 'Ocp-Apim-Subscription-Key': process.env.AZURE_MODERATOR, 'Content-Type': 'text/plain' } }).then((response) => {
+        { text }, { headers: { 'Ocp-Apim-Subscription-Key': process.env.AZURE_MODERATOR, 'Content-Type': 'text/plain' } }).then((response) => {
             console.log(response.data);
             let terms = response.data.Terms
             let containsPII = Object.keys(response.data).find((el) => el === "PII")
+            let moderatedOutput = ('')
             if (terms || response.data.Classification.ReviewRecommended || containsPII) {
                 console.log("failed moderation");
-                if (terms) {
-                    console.log("You can't have these words: ");
-                    terms.map(el => console.log("Offensive word " + el.Term))
-                }
-                if (containsPII) {
-                    console.log("Contains personal information");
-                }
                 if (response.data.Classification.ReviewRecommended) {
-                    console.log("Your post doesn't meet our community criteria");
+                    console.log("Your post doesn't meet our community criteria ||  ");
                     console.log("Your inappropriate score:" + response.data.Classification.Category1.Score);
                     console.log("Your suggestive score:" + response.data.Classification.Category2.Score);
                     console.log("Your offensive score: " + response.data.Classification.Category3.Score);
+                    moderatedOutput += " || Your post doesn't meet our community criteria" + "Your inappropriate score:" + response.data.Classification.Category1.Score + "Your suggestive score:" + response.data.Classification.Category2.Score + "Your offensive score: " + response.data.Classification.Category3.Score
 
+                }
+                if (terms) {
+                    console.log("You can't have these words: ");
+                    moderatedOutput += "You can't have these words: "
+                    terms.map(el => console.log("Offensive word '" + el.Term + "'"))
+                    terms.map(el => moderatedOutput += ("Offensive word " + el.Term + ","))
+
+                }
+                if (containsPII) {
+                    console.log("Contains personal information");
+                    moderatedOutput += '|| Contains personal information '
+                }
+                if (moderatedOutput.length > 0) {
+                    res.send(moderatedOutput)
                 }
             } else {
                 return next()
             }
-            console.log(testText);
+            console.log(text);
         })
 }
-console.log(testText);
 
 //text/plain
 //////////////////////////////
